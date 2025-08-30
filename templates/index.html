@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>EchoVerse 🎧</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="container py-5">
+    <div class="text-center mb-4">
+      <h1 class="display-5">EchoVerse <span class="emoji">🎧</span></h1>
+      <p class="lead text-muted">Turn your stories into expressive, downloadable audio</p>
+    </div>
+
+    {% if error %}
+      <div class="alert alert-danger">{{ error }}</div>
+    {% endif %}
+
+    <div class="card shadow-sm mb-4">
+      <div class="card-body">
+        <form method="post">
+          <div class="mb-3">
+            <label class="form-label">Enter Text</label>
+            <textarea name="text" class="form-control" placeholder="Type your story here..." rows="6">{{ original_text }}</textarea>
+          </div>
+
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">Select Tone</label>
+              <select name="tone" class="form-select">
+                <option value="Neutral" {% if tone=='Neutral' %}selected{% endif %}>Neutral</option>
+                <option value="Suspenseful" {% if tone=='Suspenseful' %}selected{% endif %}>Suspenseful</option>
+                <option value="Inspiring" {% if tone=='Inspiring' %}selected{% endif %}>Inspiring</option>
+                <option value="Excited" {% if tone=='Excited' %}selected{% endif %}>Excited</option>
+                <option value="Calm" {% if tone=='Calm' %}selected{% endif %}>Calm</option>
+              </select>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Select Voice (simulated)</label>
+              <select name="voice" class="form-select">
+                <option value="Allison" {% if voice=='Allison' %}selected{% endif %}>Allison</option>
+                <option value="Michael" {% if voice=='Michael' %}selected{% endif %}>Michael</option>
+                <option value="Lisa" {% if voice=='Lisa' %}selected{% endif %}>Lisa</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="text-center mt-4">
+            <button class="btn btn-lg btn-pink" type="submit">🎤 Generate</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    {% if rewritten_text %}
+      <div class="row g-4">
+        <div class="col-md-6">
+          <div class="card p-3">
+            <h5>Original Text</h5>
+            <p class="mb-0">{{ original_text }}</p>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="card p-3">
+            <h5>Rewritten Text ({{ tone }})</h5>
+            <p class="mb-0">{{ rewritten_text }}</p>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+
+    {% if audio_file %}
+      <div class="card mt-4 p-3">
+        <h5>Generated Audio ({{ voice }})</h5>
+        <audio controls class="w-100 mt-2">
+          <source src="{{ url_for('static', filename=audio_file) }}" type="audio/wav">
+          Your browser does not support audio playback.
+        </audio>
+        <div class="mt-2">
+          <a class="btn btn-outline-light btn-sm" href="{{ url_for('static', filename=audio_file) }}" download>⬇️ Download audio</a>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</body>
+</html>
